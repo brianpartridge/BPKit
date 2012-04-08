@@ -12,6 +12,7 @@
 
 - (NSString *)bp_name;
 - (NSString *)bp_version;
+- (NSString *)bp_fullVersion;
 - (id)bp_infoObjectForKey:(id)key;
 
 @end

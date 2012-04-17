@@ -29,6 +29,7 @@ typedef enum {
 #import "NSString+BPKit.h"
 #import "NSURL+BPKit.h"
 #import "UIColor+BPKit.h"
+#import "UIImage+BPKit.h"
 
 #pragma mark - Controllers
 
@@ -44,3 +45,6 @@ typedef enum {
 #import "BPTransparentToolbar.h"
 #import "BPAlertView.h"
 
+#pragma mark - Utils
+
+#import "BPIndirectiTunesURLOpener.h"

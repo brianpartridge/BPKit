@@ -8,6 +8,9 @@
 
 #import "BPCreditsViewController.h"
 #import "BPLicenseViewController.h"
+#import <QuartzCore/QuartzCore.h>
+#import "UIImage+BPKit.h"
+#import "BPIndirectItunesURLOpener.h"
 
 typedef enum {
     SectionCreator,
@@ -48,10 +51,15 @@ typedef enum {
     switch (indexPath.section) {
         case SectionCreator:
             switch (indexPath.row) {
-                case SectionCreatorRowName:
+                case SectionCreatorRowName: {
                     cell.textLabel.text = [self.data objectForKey:@"BPCreatorName"];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                    break;
+                    NSString *creatorImageName = [self.data objectForKey:@"BPCreatorImage"];
+                    cell.imageView.image = [UIImage imageNamed:creatorImageName];
+                    cell.imageView.layer.cornerRadius = 4;
+                    cell.imageView.layer.borderWidth = 1;
+                    cell.imageView.layer.borderColor = [UIColor colorWithWhite:0.5 alpha:1].CGColor;
+                }   break;
                 case SectionCreatorRowTwitter:
                     cell.textLabel.text = [NSString stringWithFormat:@"@%@", [self.data objectForKey:@"BPCreatorTwitter"]];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -64,14 +72,31 @@ typedef enum {
             NSArray *apps = [self.data objectForKey:@"BPOtherApps"];
             NSDictionary *app = [apps objectAtIndex:indexPath.row];
             cell.textLabel.text = [app objectForKey:@"AppName"];
+            cell.detailTextLabel.text = [app objectForKey:@"AppSubtitle"];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            // TODO: display icon
+            NSString *iconName = [app objectForKey:@"AppIcon"];
+            // TODO: support loading icon from URL
+            UIImage *icon = [UIImage imageNamed:iconName];
+            icon = [UIImage bp_imageWithImage:icon scaledToSize:CGSizeMake(57, 57)];
+            cell.imageView.image = icon;
+            cell.imageView.layer.cornerRadius = 10;
+            cell.imageView.layer.borderWidth = 1;
+            cell.imageView.layer.borderColor = [UIColor colorWithWhite:0.5 alpha:1].CGColor;
         }   break;
         case SectionThanks: {
             NSArray *thanks = [self.data objectForKey:@"BPThanks"];
-            NSString *thank = [thanks objectAtIndex:indexPath.row];
-            cell.textLabel.text = thank;
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            id thank = [thanks objectAtIndex:indexPath.row];
+            if ([thank isKindOfClass:[NSString class]]) {
+                cell.textLabel.text = thank;
+                cell.accessoryType = UITableViewCellAccessoryNone;
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            } else if ([thank isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *dict = thank;
+                cell.textLabel.text = [dict objectForKey:@"ThankName"];
+                NSString *thankURL = [dict objectForKey:@"ThankURL"];
+                cell.accessoryType = (thankURL == nil) ? UITableViewCellAccessoryNone : UITableViewCellAccessoryDisclosureIndicator;
+                cell.selectionStyle = (thankURL == nil) ? UITableViewCellSelectionStyleNone : UITableViewCellSelectionStyleBlue;
+            }
         }   break;
         case SectionOpenSource: {
             NSArray *projects = [self.data objectForKey:@"BPOSS"];
@@ -114,10 +139,16 @@ typedef enum {
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
+    NSString *CellIdentifier = [NSString stringWithFormat:@"CellForSection-%d", indexPath.section];
+    
+    UITableViewCellStyle cellStyle = UITableViewCellStyleValue1;
+    if (indexPath.section == SectionOtherApps) {
+        cellStyle = UITableViewCellStyleSubtitle;
+    }
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+        cell = [[UITableViewCell alloc] initWithStyle:cellStyle reuseIdentifier:CellIdentifier];
     }
     
     [self configureCell:cell atIndexPath:indexPath];
@@ -148,6 +179,29 @@ typedef enum {
     return title;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    CGFloat height = 44;
+    
+    switch (indexPath.section) {
+        case SectionCreator:
+            switch (indexPath.row) {
+                case SectionCreatorRowName:
+                    height = 52;
+                    break;
+                default:
+                    break;
+            }
+            break;
+        case SectionOtherApps:
+            height = 64;
+            break;
+        default:
+            break;
+    }
+    
+    return height;
+}
+
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -158,11 +212,15 @@ typedef enum {
             switch (indexPath.row) {
                 case SectionCreatorRowName: {
                     NSURL *url = [NSURL URLWithString:[self.data objectForKey:@"BPCreatorURL"]];
-                    [[UIApplication sharedApplication] openURL:url];
+                    if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                        [[UIApplication sharedApplication] openURL:url];
+                    }
                 }   break;
                 case SectionCreatorRowTwitter: {
                     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://twitter.com/%@", [self.data objectForKey:@"BPCreatorTwitter"]]];
-                    [[UIApplication sharedApplication] openURL:url];
+                    if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                        [[UIApplication sharedApplication] openURL:url];
+                    }
                 }   break;
                 default:
                     break;
@@ -172,13 +230,29 @@ typedef enum {
             NSArray *apps = [self.data objectForKey:@"BPOtherApps"];
             NSDictionary *app = [apps objectAtIndex:indexPath.row];
             NSURL *url = [NSURL URLWithString:[app objectForKey:@"AppURL"]];
-            [[UIApplication sharedApplication] openURL:url];
+            if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                [BPIndirectiTunesURLOpener openURL:url];
+            }
+        }   break;
+        case SectionThanks: {
+            NSArray *thanks = [self.data objectForKey:@"BPThanks"];
+            id thank = [thanks objectAtIndex:indexPath.row];
+            if ([thank isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *dict = thank;
+                NSString *thankURL = [dict objectForKey:@"ThankURL"];
+                NSURL *url = [NSURL URLWithString:thankURL];
+                if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                    [[UIApplication sharedApplication] openURL:url];
+                }
+            }
         }   break;
         case SectionOpenSource: {
             NSArray *projects = [self.data objectForKey:@"BPOSS"];
             NSDictionary *project = [projects objectAtIndex:indexPath.row];
             NSURL *url = [NSURL URLWithString:[project objectForKey:@"ProjectURL"]];
-            [[UIApplication sharedApplication] openURL:url];
+            if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                [[UIApplication sharedApplication] openURL:url];
+            }
         }   break;
         default:
             break;

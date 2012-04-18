@@ -10,6 +10,7 @@
 #import <MessageUI/MessageUI.h>
 
 extern NSString * const kBPSupportEmail;
+extern NSString * const kBPSupportTwitter;
 extern NSString * const kBPSupportURL;
 extern NSString * const kBPAboutContent;
 

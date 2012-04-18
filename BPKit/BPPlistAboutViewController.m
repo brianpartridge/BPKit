@@ -9,6 +9,7 @@
 #import "BPPlistAboutViewController.h"
 
 NSString * const kBPSupportEmail = @"BPSupportEmail";
+NSString * const kBPSupportTwitter = @"BPSupportTwitter";
 NSString * const kBPSupportURL = @"BPSupportURL";
 NSString * const kBPAboutContent = @"BPAboutContent";
 

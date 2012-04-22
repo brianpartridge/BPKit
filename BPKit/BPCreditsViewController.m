@@ -29,6 +29,9 @@ typedef enum {
 @interface BPCreditsViewController ()
 
 @property (nonatomic, strong) NSDictionary *data;
+@property (nonatomic, strong) NSArray *apps;
+@property (nonatomic, strong) NSArray *thanks;
+@property (nonatomic, strong) NSArray *projects;
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
@@ -37,6 +40,9 @@ typedef enum {
 @implementation BPCreditsViewController
 
 @synthesize data;
+@synthesize apps;
+@synthesize thanks;
+@synthesize projects;
 
 - (void)viewDidLoad
 {
@@ -45,6 +51,9 @@ typedef enum {
     self.title = @"Credits";
     
     self.data = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"BPAboutContent"];
+    self.apps = [self.data objectForKey:@"BPOtherApps"];
+    self.thanks = [self.data objectForKey:@"BPThanks"];
+    self.projects = [self.data objectForKey:@"BPOSS"];
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -69,8 +78,7 @@ typedef enum {
             }
             break;
         case SectionOtherApps: {
-            NSArray *apps = [self.data objectForKey:@"BPOtherApps"];
-            NSDictionary *app = [apps objectAtIndex:indexPath.row];
+            NSDictionary *app = [self.apps objectAtIndex:indexPath.row];
             cell.textLabel.text = [app objectForKey:@"AppName"];
             cell.detailTextLabel.text = [app objectForKey:@"AppSubtitle"];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -84,23 +92,14 @@ typedef enum {
             cell.imageView.layer.borderColor = [UIColor colorWithWhite:0.5 alpha:1].CGColor;
         }   break;
         case SectionThanks: {
-            NSArray *thanks = [self.data objectForKey:@"BPThanks"];
-            id thank = [thanks objectAtIndex:indexPath.row];
-            if ([thank isKindOfClass:[NSString class]]) {
-                cell.textLabel.text = thank;
-                cell.accessoryType = UITableViewCellAccessoryNone;
-                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            } else if ([thank isKindOfClass:[NSDictionary class]]) {
-                NSDictionary *dict = thank;
-                cell.textLabel.text = [dict objectForKey:@"ThankName"];
-                NSString *thankURL = [dict objectForKey:@"ThankURL"];
-                cell.accessoryType = (thankURL == nil) ? UITableViewCellAccessoryNone : UITableViewCellAccessoryDisclosureIndicator;
-                cell.selectionStyle = (thankURL == nil) ? UITableViewCellSelectionStyleNone : UITableViewCellSelectionStyleBlue;
-            }
+            NSDictionary *thank = [self.thanks objectAtIndex:indexPath.row];
+            cell.textLabel.text = [thank objectForKey:@"ThankName"];
+            NSString *thankURL = [thank objectForKey:@"ThankURL"];
+            cell.accessoryType = (thankURL == nil) ? UITableViewCellAccessoryNone : UITableViewCellAccessoryDisclosureIndicator;
+            cell.selectionStyle = (thankURL == nil) ? UITableViewCellSelectionStyleNone : UITableViewCellSelectionStyleBlue;
         }   break;
         case SectionOpenSource: {
-            NSArray *projects = [self.data objectForKey:@"BPOSS"];
-            NSDictionary *project = [projects objectAtIndex:indexPath.row];
+            NSDictionary *project = [self.projects objectAtIndex:indexPath.row];
             cell.textLabel.text = [project objectForKey:@"ProjectName"];
             cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
         }   break;
@@ -123,13 +122,13 @@ typedef enum {
             count = SectionCreatorRowCount;
             break;
         case SectionOtherApps:
-            count = ((NSArray *)[self.data objectForKey:@"BPOtherApps"]).count;
+            count = self.apps.count;
             break;
         case SectionThanks:
-            count = ((NSArray *)[self.data objectForKey:@"BPThanks"]).count;
+            count = self.thanks.count;
             break;
         case SectionOpenSource:
-            count = ((NSArray *)[self.data objectForKey:@"BPOSS"]).count;
+            count = self.projects.count;
             break;
         default:
             break;
@@ -227,16 +226,14 @@ typedef enum {
             }
             break;
         case SectionOtherApps: {
-            NSArray *apps = [self.data objectForKey:@"BPOtherApps"];
-            NSDictionary *app = [apps objectAtIndex:indexPath.row];
+            NSDictionary *app = [self.apps objectAtIndex:indexPath.row];
             NSURL *url = [NSURL URLWithString:[app objectForKey:@"AppURL"]];
             if ([[UIApplication sharedApplication] canOpenURL:url]) {
                 [BPIndirectiTunesURLOpener openURL:url];
             }
         }   break;
         case SectionThanks: {
-            NSArray *thanks = [self.data objectForKey:@"BPThanks"];
-            id thank = [thanks objectAtIndex:indexPath.row];
+            id thank = [self.thanks objectAtIndex:indexPath.row];
             if ([thank isKindOfClass:[NSDictionary class]]) {
                 NSDictionary *dict = thank;
                 NSString *thankURL = [dict objectForKey:@"ThankURL"];
@@ -247,8 +244,7 @@ typedef enum {
             }
         }   break;
         case SectionOpenSource: {
-            NSArray *projects = [self.data objectForKey:@"BPOSS"];
-            NSDictionary *project = [projects objectAtIndex:indexPath.row];
+            NSDictionary *project = [self.projects objectAtIndex:indexPath.row];
             NSURL *url = [NSURL URLWithString:[project objectForKey:@"ProjectURL"]];
             if ([[UIApplication sharedApplication] canOpenURL:url]) {
                 [[UIApplication sharedApplication] openURL:url];
@@ -262,8 +258,7 @@ typedef enum {
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     switch (indexPath.section) {
         case SectionOpenSource: {
-            NSArray *projects = [self.data objectForKey:@"BPOSS"];
-            NSDictionary *project = [projects objectAtIndex:indexPath.row];
+            NSDictionary *project = [self.projects objectAtIndex:indexPath.row];
             NSString *file = [project objectForKey:@"ProjectLicense"];
             NSURL *url = [[NSBundle mainBundle] URLForResource:[file stringByDeletingPathExtension] withExtension:[file pathExtension]];
             BPLicenseViewController *viewer = [[BPLicenseViewController alloc] init];

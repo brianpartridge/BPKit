@@ -88,7 +88,7 @@ typedef enum {
             switch (indexPath.row) {
                 case SectionAboutRowApp:
                     cell.textLabel.text = [NSBundle mainBundle].bp_name;
-                    cell.detailTextLabel.text = [NSString stringWithFormat:@"v%@", [NSBundle mainBundle].bp_fullVersion];
+                    cell.detailTextLabel.text = [NSString stringWithFormat:@"v%@", [NSBundle mainBundle].bp_version];
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
                     break;
                 case SectionAboutRowCredits:

@@ -14,20 +14,12 @@
     return [self bp_infoObjectForKey:(id)kCFBundleNameKey];
 }
 
-- (NSString *)bp_version {
+- (NSString *)bp_shortVersion {
     return [self bp_infoObjectForKey:@"CFBundleShortVersionString"];
 }
 
-- (NSString *)bp_fullVersion {
-    NSString *result = nil;
-    NSString *version = [self bp_infoObjectForKey:@"CFBundleShortVersionString"];
-    NSString *build = [self bp_infoObjectForKey:(id)kCFBundleVersionKey];
-    if ([NSString bp_isNilOrEmpty:build]) {
-        result = version;
-    } else {
-        result = [NSString stringWithFormat:@"%@-%@", version, build];
-    }
-    return result;
+- (NSString *)bp_version {
+    return [self bp_infoObjectForKey:(id)kCFBundleVersionKey];
 }
 
 - (id)bp_infoObjectForKey:(id)key {

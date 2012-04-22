@@ -178,6 +178,20 @@ typedef enum {
     return title;
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    NSString *title = nil;
+    
+    switch (section) {
+        case SectionOpenSource:
+            title = @"Thank you, project contributors!";
+            break;
+        default:
+            break;
+    }
+    
+    return title;
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     CGFloat height = 44;
     

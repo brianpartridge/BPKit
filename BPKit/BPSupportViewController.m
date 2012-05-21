@@ -203,8 +203,9 @@ typedef enum {
                     [[UIApplication sharedApplication] openURL:url];
                 }   break;
                 case SectionLikeRowUpgrade: {
+                    // The URL is probably an affiliate link for the pro version, so use the indirect url opener to handle any redirects.
                     NSURL *url = [NSURL URLWithString:[self.data objectForKey:@"BPUpgradeURL"]];
-                    [[UIApplication sharedApplication] openURL:url];
+                    [BPIndirectiTunesURLOpener openURL:url];
                 }   break;
                 default:
                     break;

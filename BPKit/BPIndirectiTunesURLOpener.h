@@ -8,10 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
+@interface UIApplication (BPIndirectiTunesURLOpener)
+
+- (void)bp_openURL:(NSURL *)url;
+
+@end
+
 // Based on Technical Q&A QA1629
 // https://developer.apple.com/library/ios/#qa/qa2008/qa1629.html
 @interface BPIndirectiTunesURLOpener : NSObject
 
-+ (void)openURL:url;
++ (BOOL)isRedirectURL:(NSURL *)url;
++ (void)openURL:(NSURL *)url;
 
 @end

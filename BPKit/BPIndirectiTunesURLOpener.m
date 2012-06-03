@@ -8,11 +8,27 @@
 
 #import "BPIndirectiTunesURLOpener.h"
 
+static NSString * const kLinkShareURLHostSuffix = @"click.linksynergy.com";
+static NSString * const kiTunesURLHostSuffix = @"itunes.apple.com";
+
+@implementation UIApplication (BPIndirectiTunesURLOpener)
+
+- (void)bp_openURL:(NSURL *)url {
+    // Check for affiliate/redirect URLs and use the indirect url opener if necessary.
+    if ([BPIndirectiTunesURLOpener isRedirectURL:url]) {
+        [BPIndirectiTunesURLOpener openURL:url];
+    } else {
+        [self openURL:url];
+    }
+}
+
+@end
+
 @interface BPIndirectiTunesURLOpener ()
 
 @property (nonatomic, strong) NSURL *responseURL;
 
-- (void)openURL:url;
+- (void)openURL:(NSURL *)url;
 
 @end
 
@@ -29,6 +45,10 @@
 
 @synthesize responseURL;
 
++ (BOOL)isRedirectURL:(NSURL *)url {
+    return [url.host hasSuffix:kLinkShareURLHostSuffix];
+}
+
 - (void)openURL:(id)url {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-value"
@@ -41,7 +61,7 @@
 // Save the most recent URL in case multiple redirects occur
 - (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response {
     self.responseURL = response.URL;
-    if( [self.responseURL.host hasSuffix:@"itunes.apple.com"]) {
+    if( [self.responseURL.host hasSuffix:kiTunesURLHostSuffix]) {
         [connection cancel];
         [self connectionDidFinishLoading:connection];
         return nil;

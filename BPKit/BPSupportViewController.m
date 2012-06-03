@@ -9,10 +9,24 @@
 #import "BPSupportViewController.h"
 #import "BPCreditsViewController.h"
 
-static NSString * const kBPContactSupportImage = @"BPContactSupportImage";
-static NSString * const kBPRateImage = @"BPRateImage";
-static NSString * const kBPUpgradeImage = @"BPUpgradeImage";
-static NSString * const kBPCreditsImage = @"BPCreditsImage";
+#pragma mark - Plist Keys
+static NSString * const kBPSupportViewControllerContent = @"BPSupportViewControllerContent";
+
+static NSString * const kSupportEmail = @"SupportEmail";
+static NSString * const kSupportEmailImage = @"SupportEmailImage";
+static NSString * const kSupportTwitter = @"SupportTwitter";
+static NSString * const kSupportTwitterImage = @"SupportTwitterImage";
+
+static NSString * const kRateURL = @"RateURL";
+static NSString * const kRateImage = @"RateImage";
+static NSString * const kUpgradeMessage = @"UpgradeMessage";
+static NSString * const kUpgradeURL = @"UpgradeURL";
+static NSString * const kUpgradeImage = @"UpgradeImage";
+static NSString * const kUpgradeDescription = @"UpgradeDescription";
+
+static NSString * const kCopyrightHolder = @"CopyrightHolder";
+static NSString * const kCopyrightYear = @"CopyrightYear";
+static NSString * const kCreditsImage = @"CreditsImage";
 
 typedef enum {
     SectionSupport,
@@ -20,6 +34,13 @@ typedef enum {
     SectionAbout,
     SectionCount,
 } Sections;
+
+typedef enum {
+    SectionSupportRowEmail,
+    SectionSupportRowTwitter,
+    SectionSupportRowCount,
+    SectionSupportRowCountNoTwitter = SectionSupportRowTwitter,
+} SectionSupportRows;
 
 typedef enum {
     SectionLikeRowRate,
@@ -37,7 +58,6 @@ typedef enum {
 @interface BPSupportViewController ()
 
 @property (nonatomic, strong) NSDictionary *data;
-@property (nonatomic, strong) NSMutableArray *sections;
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 
@@ -46,40 +66,49 @@ typedef enum {
 @implementation BPSupportViewController
 
 @synthesize data;
-@synthesize sections;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.title = @"Support";
     
-    self.data = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"BPSupportContent"];
+    self.data = [[NSBundle mainBundle] objectForInfoDictionaryKey:kBPSupportViewControllerContent];
     
-    self.sections = [NSMutableArray arrayWithObjects:[NSNumber numberWithInt:SectionSupport], 
-                     [NSNumber numberWithInt:SectionLike], 
-                     [NSNumber numberWithInt:SectionAbout], 
-                     nil];
+    // TODO: check for required keys
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     switch (indexPath.section) {
         case SectionSupport:
-            cell.textLabel.text = @"Contact Support";
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            cell.imageView.image = [UIImage imageNamed:[self.data objectForKey:kBPContactSupportImage]];
+            switch (indexPath.row) {
+                case SectionSupportRowEmail:
+                    cell.textLabel.text = @"Contact Support";
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    cell.imageView.image = [UIImage imageNamed:[self.data objectForKey:kSupportEmailImage]];
+                    break;
+                case SectionSupportRowTwitter: {
+                    NSString *twitter = [self.data objectForKey:kSupportTwitter];
+                    cell.textLabel.text = [NSString stringWithFormat:@"@%@", twitter];
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    cell.imageView.image = [UIImage imageNamed:[self.data objectForKey:kSupportTwitterImage]];
+                }   break;
+                default:
+                    break;
+            }
             break;
         case SectionLike:
             switch (indexPath.row) {
                 case SectionLikeRowRate:
                     cell.textLabel.text = [NSString stringWithFormat:@"I Love It!", [NSBundle mainBundle].bp_name];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                    cell.imageView.image = [UIImage imageNamed:[self.data objectForKey:kBPRateImage]];
+                    cell.imageView.image = [UIImage imageNamed:[self.data objectForKey:kRateImage]];
                     break;
-                case SectionLikeRowUpgrade:
-                    cell.textLabel.text = @"Upgrade To Pro";
+                case SectionLikeRowUpgrade: {
+                    NSString *upgradeMessage = [self.data objectForKey:kUpgradeMessage];
+                    cell.textLabel.text = ([NSString bp_isNilOrEmpty:upgradeMessage]) ? @"Upgrade" : upgradeMessage;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                    cell.imageView.image = [UIImage imageNamed:[self.data objectForKey:kBPUpgradeImage]];
-                    break;
+                    cell.imageView.image = [UIImage imageNamed:[self.data objectForKey:kUpgradeImage]];
+                }   break;
                 default:
                     break;
             }
@@ -94,7 +123,7 @@ typedef enum {
                 case SectionAboutRowCredits:
                     cell.textLabel.text = @"Credits";
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                    cell.imageView.image = [UIImage imageNamed:[self.data objectForKey:kBPCreditsImage]];
+                    cell.imageView.image = [UIImage imageNamed:[self.data objectForKey:kCreditsImage]];
                     break;
                 default:
                     break;
@@ -102,6 +131,18 @@ typedef enum {
             break;
         default:
             break;
+    }
+}
+
+- (void)openURL:(NSURL *)url {
+    UIApplication *app = [UIApplication sharedApplication];
+    if ([app canOpenURL:url]) {
+        // The URL (especially the upgrade URL) is probably an affiliate link, so use the indirect url opener to handle any redirects.
+        if ([BPIndirectiTunesURLOpener isRedirectURL:url]) {
+            [BPIndirectiTunesURLOpener openURL:url];
+        } else {
+            [app openURL:url];
+        }
     }
 }
 
@@ -116,10 +157,11 @@ typedef enum {
     
     switch (section) {
         case SectionSupport:
-            count = 1;
+            count = ([NSString bp_isNilOrEmpty:[self.data objectForKey:kSupportTwitter]]) ?
+                     SectionSupportRowCountNoTwitter : SectionSupportRowCount;
             break;
         case SectionLike:
-            count = ([NSString bp_isNilOrEmpty:[self.data objectForKey:@"BPUpgradeURL"]]) ?
+            count = ([NSString bp_isNilOrEmpty:[self.data objectForKey:kUpgradeURL]]) ?
                       SectionLikeRowCountNoUpgrade : SectionLikeRowCount;
             break;
         case SectionAbout:
@@ -132,8 +174,7 @@ typedef enum {
     return count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -167,10 +208,12 @@ typedef enum {
     
     switch (section) {
         case SectionLike:
-            title = [self.data objectForKey:@"BPUpgradeCopy"];
+            title = [self.data objectForKey:@"UpgradeDescription"];
             break;
         case SectionAbout:
-            title = [NSString stringWithFormat:@"‌© %@ %@", [self.data objectForKey:@"BPCopyrightYear"], [self.data objectForKey:@"BPCopyrightHolder"]];
+            title = [NSString stringWithFormat:@"‌© %@ %@", 
+                     [self.data objectForKey:@"CopyrightYear"], 
+                     [self.data objectForKey:@"CopyrightHolder"]];
             break;
         default:
             break;
@@ -179,33 +222,60 @@ typedef enum {
     return title;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    CGFloat height = 0;
+
+    if (self.footerHeight != nil) {
+        height = [super tableView:tableView heightForFooterInSection:section];
+    } else {
+        NSString *footer = [self tableView:tableView titleForFooterInSection:section];
+        UIFont *font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+        CGSize maxSize = CGSizeMake(tableView.frame.size.width, MAXFLOAT);
+        CGFloat padding = 11;
+        CGSize size = [footer sizeWithFont:font constrainedToSize:maxSize lineBreakMode:UILineBreakModeWordWrap];
+        height = size.height + 2 * padding;
+    }
+    
+    return height;
+}
+
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     switch (indexPath.section) {
-        case SectionSupport: {
-            MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
-            mailer.mailComposeDelegate = self;
-            [mailer setSubject:[NSString stringWithFormat:@"[%@ Support] ", [[NSBundle mainBundle] bp_name]]];
-            [mailer setToRecipients:[NSArray arrayWithObject:[self.data objectForKey:@"BPSupportEmail"]]];
-            NSString *body = [NSString stringWithFormat:@"\n\nThis message was generated by %@ v%@.", 
-                              [[NSBundle mainBundle] bp_name], 
-                              [[NSBundle mainBundle] bp_version]];
-            [mailer setMessageBody:body isHTML:NO];
-            [self presentModalViewController:mailer animated:YES];
-        }   break;
+        case SectionSupport:
+            switch (indexPath.row) {
+                case SectionSupportRowEmail: {
+                    MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
+                    mailer.mailComposeDelegate = self;
+                    [mailer setSubject:[NSString stringWithFormat:@"[%@ Support] ", [[NSBundle mainBundle] bp_name]]];
+                    [mailer setToRecipients:[NSArray arrayWithObject:[self.data objectForKey:@"SupportEmail"]]];
+                    NSString *body = [NSString stringWithFormat:@"\n\nThis message was generated by %@ v%@.", 
+                                      [[NSBundle mainBundle] bp_name], 
+                                      [[NSBundle mainBundle] bp_version]];
+                    [mailer setMessageBody:body isHTML:NO];
+                    [self presentModalViewController:mailer animated:YES];
+                }   break;
+                case SectionSupportRowTwitter: {
+                    NSString *twitter = [self.data objectForKey:kSupportTwitter];
+                    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://twitter.com/%@", twitter]];
+                    [[UIApplication sharedApplication] bp_openURL:url];
+                }   break;
+                default:
+                    break;
+            }
+            break;
         case SectionLike:
             switch (indexPath.row) {
                 case SectionLikeRowRate: {
-                    NSURL *url = [NSURL URLWithString:[self.data objectForKey:@"BPRateURL"]];
-                    [[UIApplication sharedApplication] openURL:url];
+                    NSURL *url = [NSURL URLWithString:[self.data objectForKey:@"RateURL"]];
+                    [[UIApplication sharedApplication] bp_openURL:url];
                 }   break;
                 case SectionLikeRowUpgrade: {
-                    // The URL is probably an affiliate link for the pro version, so use the indirect url opener to handle any redirects.
-                    NSURL *url = [NSURL URLWithString:[self.data objectForKey:@"BPUpgradeURL"]];
-                    [BPIndirectiTunesURLOpener openURL:url];
+                    NSURL *url = [NSURL URLWithString:[self.data objectForKey:@"UpgradeURL"]];
+                    [[UIApplication sharedApplication] bp_openURL:url];
                 }   break;
                 default:
                     break;
@@ -216,7 +286,11 @@ typedef enum {
                 case SectionAboutRowCredits: {
                     BPCreditsViewController *credits = [[BPCreditsViewController alloc] initWithStyle:self.tableView.style];
                     [self shareBlocksWithController:credits];
-                    [self.navigationController pushViewController:credits animated:YES];
+                    if (self.navigationController != nil) {
+                        [self.navigationController pushViewController:credits animated:YES];
+                    } else {
+                        [self presentModalViewController:credits animated:YES];
+                    }
                 }   break;
                 default:
                     break;

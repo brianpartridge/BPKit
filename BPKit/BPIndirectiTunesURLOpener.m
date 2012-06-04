@@ -13,13 +13,19 @@ static NSString * const kiTunesURLHostSuffix = @"itunes.apple.com";
 
 @implementation UIApplication (BPIndirectiTunesURLOpener)
 
-- (void)bp_openURL:(NSURL *)url {
-    // Check for affiliate/redirect URLs and use the indirect url opener if necessary.
-    if ([BPIndirectiTunesURLOpener isRedirectURL:url]) {
-        [BPIndirectiTunesURLOpener openURL:url];
-    } else {
-        [self openURL:url];
+- (BOOL)bp_attemptOpenURL:(NSURL *)url {
+    BOOL result = NO;
+    if ([self canOpenURL:url]) {
+        // Check for affiliate/redirect URLs and use the indirect url opener if necessary.
+        if ([BPIndirectiTunesURLOpener isRedirectURL:url]) {
+            [BPIndirectiTunesURLOpener openURL:url];
+            // The redirection is async, so just return YES.
+            result = YES;
+        } else {
+            result = [self openURL:url];
+        }
     }
+    return result;
 }
 
 @end

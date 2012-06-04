@@ -10,7 +10,11 @@
 
 @interface UIApplication (BPIndirectiTunesURLOpener)
 
-- (void)bp_openURL:(NSURL *)url;
+/*
+ Checks whether a URL can be opened and then opens it, while handling any affiliate redirects.
+ Returns NO if the URL cannot be opened or if opening the URL failed.
+ */
+- (BOOL)bp_attemptOpenURL:(NSURL *)url;
 
 @end
 

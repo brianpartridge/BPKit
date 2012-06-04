@@ -40,6 +40,10 @@
 		D39C1DF51426C1460017E5B7 /* NSURL+BPKit.m in Sources */ = {isa = PBXBuildFile; fileRef = D39C1DF31426C1460017E5B7 /* NSURL+BPKit.m */; };
 		D3E88DDD15159CD900CEC8CD /* BPLicenseViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = D3E88DDB15159CD900CEC8CD /* BPLicenseViewController.h */; };
 		D3E88DDE15159CD900CEC8CD /* BPLicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D3E88DDC15159CD900CEC8CD /* BPLicenseViewController.m */; };
+		D3FA6473157C458B002905D0 /* BPiTunesStoreClient.h in Headers */ = {isa = PBXBuildFile; fileRef = D3FA6471157C458B002905D0 /* BPiTunesStoreClient.h */; };
+		D3FA6474157C458B002905D0 /* BPiTunesStoreClient.m in Sources */ = {isa = PBXBuildFile; fileRef = D3FA6472157C458B002905D0 /* BPiTunesStoreClient.m */; };
+		D3FA6477157C4670002905D0 /* BPImageDownloader.h in Headers */ = {isa = PBXBuildFile; fileRef = D3FA6475157C4670002905D0 /* BPImageDownloader.h */; };
+		D3FA6478157C4670002905D0 /* BPImageDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = D3FA6476157C4670002905D0 /* BPImageDownloader.m */; };
 		D3FCFFDC1426BB5A00EECE56 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3FCFFDB1426BB5A00EECE56 /* Foundation.framework */; };
 		D3FCFFE71426BB5A00EECE56 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3FCFFE61426BB5A00EECE56 /* UIKit.framework */; };
 		D3FCFFE81426BB5A00EECE56 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3FCFFDB1426BB5A00EECE56 /* Foundation.framework */; };
@@ -94,6 +98,10 @@
 		D39C1DF31426C1460017E5B7 /* NSURL+BPKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+BPKit.m"; sourceTree = "<group>"; };
 		D3E88DDB15159CD900CEC8CD /* BPLicenseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPLicenseViewController.h; sourceTree = "<group>"; };
 		D3E88DDC15159CD900CEC8CD /* BPLicenseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPLicenseViewController.m; sourceTree = "<group>"; };
+		D3FA6471157C458B002905D0 /* BPiTunesStoreClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPiTunesStoreClient.h; sourceTree = "<group>"; };
+		D3FA6472157C458B002905D0 /* BPiTunesStoreClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPiTunesStoreClient.m; sourceTree = "<group>"; };
+		D3FA6475157C4670002905D0 /* BPImageDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPImageDownloader.h; sourceTree = "<group>"; };
+		D3FA6476157C4670002905D0 /* BPImageDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPImageDownloader.m; sourceTree = "<group>"; };
 		D3FCFFD81426BB5A00EECE56 /* libBPKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBPKit.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3FCFFDB1426BB5A00EECE56 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D3FCFFDF1426BB5A00EECE56 /* BPKit-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BPKit-Prefix.pch"; sourceTree = "<group>"; };
@@ -180,6 +188,10 @@
 			children = (
 				D367054E153D147B00B65142 /* BPIndirectiTunesURLOpener.h */,
 				D367054F153D147B00B65142 /* BPIndirectiTunesURLOpener.m */,
+				D3FA6471157C458B002905D0 /* BPiTunesStoreClient.h */,
+				D3FA6472157C458B002905D0 /* BPiTunesStoreClient.m */,
+				D3FA6475157C4670002905D0 /* BPImageDownloader.h */,
+				D3FA6476157C4670002905D0 /* BPImageDownloader.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -292,6 +304,8 @@
 				D394257F1517B7610074AC09 /* BPTableViewController.h in Headers */,
 				D367054B153D120300B65142 /* UIImage+BPKit.h in Headers */,
 				D3670550153D147B00B65142 /* BPIndirectiTunesURLOpener.h in Headers */,
+				D3FA6473157C458B002905D0 /* BPiTunesStoreClient.h in Headers */,
+				D3FA6477157C4670002905D0 /* BPImageDownloader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,6 +424,8 @@
 				D39425801517B7610074AC09 /* BPTableViewController.m in Sources */,
 				D367054C153D120300B65142 /* UIImage+BPKit.m in Sources */,
 				D3670551153D147B00B65142 /* BPIndirectiTunesURLOpener.m in Sources */,
+				D3FA6474157C458B002905D0 /* BPiTunesStoreClient.m in Sources */,
+				D3FA6478157C4670002905D0 /* BPImageDownloader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

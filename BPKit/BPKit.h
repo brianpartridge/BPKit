@@ -46,3 +46,5 @@ typedef enum {
 #pragma mark - Utils
 
 #import "BPIndirectiTunesURLOpener.h"
+#import "BPiTunesStoreClient.h"
+#import "BPImageDownloader.h"

@@ -12,23 +12,38 @@
 #import "UIImage+BPKit.h"
 #import "BPIndirectItunesURLOpener.h"
 
+static NSString * const kBPCreditsViewControllerContent = @"BPCreditsViewControllerContent";
+
+static NSString * const kCreators = @"Creators";
+static NSString * const kOtherApps = @"OtherApps";
+static NSString * const kThanks = @"Thanks";
+static NSString * const kOSSProjects = @"OSSProjects";
+
+static NSString * const kPersonName = @"Name";
+static NSString * const kPersonTwitter = @"Twitter";
+static NSString * const kPersonURL = @"URL";
+
+static NSString * const kAppStoreId = @"StoreId";
+static NSString * const kAppName = @"Name";
+static NSString * const kAppSubtitle = @"Subtitle";
+static NSString * const kAppURL = @"URL";
+
+static NSString * const kProjectName = @"Name";
+static NSString * const kProjectLicense = @"License";
+static NSString * const kProjectURL = @"URL";
+
 typedef enum {
-    SectionCreator,
+    SectionCreators,
     SectionOtherApps,
     SectionThanks,
     SectionOpenSource,
     SectionCount,
 }Sections;
 
-typedef enum {
-    SectionCreatorRowName,
-    SectionCreatorRowCount,
-    SectionCreatorRowTwitter,
-} SectionCreatorRows;
-
 @interface BPCreditsViewController ()
 
 @property (nonatomic, strong) NSDictionary *data;
+@property (nonatomic, strong) NSArray *creators;
 @property (nonatomic, strong) NSArray *apps;
 @property (nonatomic, strong) NSArray *thanks;
 @property (nonatomic, strong) NSArray *projects;
@@ -40,6 +55,7 @@ typedef enum {
 @implementation BPCreditsViewController
 
 @synthesize data;
+@synthesize creators;
 @synthesize apps;
 @synthesize thanks;
 @synthesize projects;
@@ -50,37 +66,32 @@ typedef enum {
     
     self.title = @"Credits";
     
-    self.data = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"BPAboutContent"];
-    self.apps = [self.data objectForKey:@"BPOtherApps"];
-    self.thanks = [self.data objectForKey:@"BPThanks"];
-    self.projects = [self.data objectForKey:@"BPOSS"];
+    self.data = [[NSBundle mainBundle] objectForInfoDictionaryKey:kBPCreditsViewControllerContent];
+    self.creators = [self.data objectForKey:kCreators];
+    self.apps = [self.data objectForKey:kOtherApps];
+    self.thanks = [self.data objectForKey:kThanks];
+    self.projects = [self.data objectForKey:kOSSProjects];
+    
+    // TODO: validate required keys
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     switch (indexPath.section) {
-        case SectionCreator:
-            switch (indexPath.row) {
-                case SectionCreatorRowName: {
-                    cell.textLabel.text = [self.data objectForKey:@"BPCreatorName"];
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                    NSString *creatorImageName = [self.data objectForKey:@"BPCreatorImage"];
-                    cell.imageView.image = [UIImage imageNamed:creatorImageName];
-                    cell.imageView.layer.cornerRadius = 4;
-                    cell.imageView.layer.borderWidth = 1;
-                    cell.imageView.layer.borderColor = [UIColor colorWithWhite:0.5 alpha:1].CGColor;
-                }   break;
-                case SectionCreatorRowTwitter:
-                    cell.textLabel.text = [NSString stringWithFormat:@"@%@", [self.data objectForKey:@"BPCreatorTwitter"]];
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                    break;
-                default:
-                    break;
-            }
-            break;
+        case SectionCreators: {
+            NSDictionary *creator = [self.creators objectAtIndex:indexPath.row];
+            cell.textLabel.text = [creator objectForKey:kPersonName];
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            NSString *creatorImageName = [creator objectForKey:@"BPCreatorImage"];
+            // TODO: support loading icon from URL
+            cell.imageView.image = [UIImage imageNamed:creatorImageName];
+            cell.imageView.layer.cornerRadius = 4;
+            cell.imageView.layer.borderWidth = 1;
+            cell.imageView.layer.borderColor = [UIColor colorWithWhite:0.5 alpha:1].CGColor;
+        }   break;
         case SectionOtherApps: {
             NSDictionary *app = [self.apps objectAtIndex:indexPath.row];
-            cell.textLabel.text = [app objectForKey:@"AppName"];
-            cell.detailTextLabel.text = [app objectForKey:@"AppSubtitle"];
+            cell.textLabel.text = [app objectForKey:kAppName];
+            cell.detailTextLabel.text = [app objectForKey:kAppSubtitle];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             NSString *iconName = [app objectForKey:@"AppIcon"];
             // TODO: support loading icon from URL
@@ -93,14 +104,14 @@ typedef enum {
         }   break;
         case SectionThanks: {
             NSDictionary *thank = [self.thanks objectAtIndex:indexPath.row];
-            cell.textLabel.text = [thank objectForKey:@"ThankName"];
-            NSString *thankURL = [thank objectForKey:@"ThankURL"];
+            cell.textLabel.text = [thank objectForKey:kPersonName];
+            NSString *thankURL = [thank objectForKey:kPersonURL];
             cell.accessoryType = (thankURL == nil) ? UITableViewCellAccessoryNone : UITableViewCellAccessoryDisclosureIndicator;
             cell.selectionStyle = (thankURL == nil) ? UITableViewCellSelectionStyleNone : UITableViewCellSelectionStyleBlue;
         }   break;
         case SectionOpenSource: {
             NSDictionary *project = [self.projects objectAtIndex:indexPath.row];
-            cell.textLabel.text = [project objectForKey:@"ProjectName"];
+            cell.textLabel.text = [project objectForKey:kProjectName];
             cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
         }   break;
         default:
@@ -118,8 +129,8 @@ typedef enum {
     NSUInteger count = 0;
     
     switch (section) {
-        case SectionCreator:
-            count = SectionCreatorRowCount;
+        case SectionCreators:
+            count = self.creators.count;
             break;
         case SectionOtherApps:
             count = self.apps.count;
@@ -159,11 +170,11 @@ typedef enum {
     NSString *title = nil;
     
     switch (section) {
-        case SectionCreator:
-            title = @"Creator";
+        case SectionCreators:
+            title = (self.creators.count == 1) ? @"Creator" : @"Creators";
             break;
         case SectionOtherApps:
-            title = @"My Other Apps";
+            title = (self.creators.count == 1) ? @"My Other Apps" : @"Other Apps";
             break;
         case SectionThanks:
             title = @"Thanks";
@@ -192,25 +203,44 @@ typedef enum {
     return title;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    CGFloat height = 0;
+    
+    if (self.footerHeight != nil) {
+        height = [super tableView:tableView heightForFooterInSection:section];
+    } else {
+        NSString *footer = [self tableView:tableView titleForFooterInSection:section];
+        if (![NSString bp_isNilOrEmpty:footer]) {
+            UIFont *font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
+            CGSize maxSize = CGSizeMake(tableView.frame.size.width, MAXFLOAT);
+            CGFloat padding = 11;
+            CGSize size = [footer sizeWithFont:font constrainedToSize:maxSize lineBreakMode:UILineBreakModeWordWrap];
+            height = size.height + 2 * padding;
+        }
+    }
+    
+    return height;
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     CGFloat height = 44;
     
-    switch (indexPath.section) {
-        case SectionCreator:
-            switch (indexPath.row) {
-                case SectionCreatorRowName:
-                    height = 52;
-                    break;
-                default:
-                    break;
-            }
-            break;
-        case SectionOtherApps:
-            height = 64;
-            break;
-        default:
-            break;
-    }
+//    switch (indexPath.section) {
+//        case SectionCreator:
+//            switch (indexPath.row) {
+//                case SectionCreatorRowName:
+//                    height = 52;
+//                    break;
+//                default:
+//                    break;
+//            }
+//            break;
+//        case SectionOtherApps:
+//            height = 64;
+//            break;
+//        default:
+//            break;
+//    }
     
     return height;
 }
@@ -221,48 +251,25 @@ typedef enum {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     switch (indexPath.section) {
-        case SectionCreator:
-            switch (indexPath.row) {
-                case SectionCreatorRowName: {
-                    NSURL *url = [NSURL URLWithString:[self.data objectForKey:@"BPCreatorURL"]];
-                    if ([[UIApplication sharedApplication] canOpenURL:url]) {
-                        [[UIApplication sharedApplication] openURL:url];
-                    }
-                }   break;
-                case SectionCreatorRowTwitter: {
-                    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://twitter.com/%@", [self.data objectForKey:@"BPCreatorTwitter"]]];
-                    if ([[UIApplication sharedApplication] canOpenURL:url]) {
-                        [[UIApplication sharedApplication] openURL:url];
-                    }
-                }   break;
-                default:
-                    break;
-            }
-            break;
+        case SectionCreators: {
+            NSDictionary *creator = [self.creators objectAtIndex:indexPath.row];
+            NSURL *url = [NSURL URLWithString:[creator objectForKey:kPersonURL]];
+            [[UIApplication sharedApplication] bp_attemptOpenURL:url];
+        }   break;
         case SectionOtherApps: {
             NSDictionary *app = [self.apps objectAtIndex:indexPath.row];
-            NSURL *url = [NSURL URLWithString:[app objectForKey:@"AppURL"]];
-            if ([[UIApplication sharedApplication] canOpenURL:url]) {
-                [BPIndirectiTunesURLOpener openURL:url];
-            }
+            NSURL *url = [NSURL URLWithString:[app objectForKey:kAppURL]];
+            [[UIApplication sharedApplication] bp_attemptOpenURL:url];
         }   break;
         case SectionThanks: {
-            id thank = [self.thanks objectAtIndex:indexPath.row];
-            if ([thank isKindOfClass:[NSDictionary class]]) {
-                NSDictionary *dict = thank;
-                NSString *thankURL = [dict objectForKey:@"ThankURL"];
-                NSURL *url = [NSURL URLWithString:thankURL];
-                if ([[UIApplication sharedApplication] canOpenURL:url]) {
-                    [[UIApplication sharedApplication] openURL:url];
-                }
-            }
+            NSDictionary *thank = [self.thanks objectAtIndex:indexPath.row];
+            NSURL *url = [NSURL URLWithString:[thank objectForKey:kPersonURL]];
+            [[UIApplication sharedApplication] bp_attemptOpenURL:url];
         }   break;
         case SectionOpenSource: {
             NSDictionary *project = [self.projects objectAtIndex:indexPath.row];
-            NSURL *url = [NSURL URLWithString:[project objectForKey:@"ProjectURL"]];
-            if ([[UIApplication sharedApplication] canOpenURL:url]) {
-                [[UIApplication sharedApplication] openURL:url];
-            }
+            NSURL *url = [NSURL URLWithString:[project objectForKey:kProjectURL]];
+            [[UIApplication sharedApplication] bp_attemptOpenURL:url];
         }   break;
         default:
             break;
@@ -273,11 +280,16 @@ typedef enum {
     switch (indexPath.section) {
         case SectionOpenSource: {
             NSDictionary *project = [self.projects objectAtIndex:indexPath.row];
-            NSString *file = [project objectForKey:@"ProjectLicense"];
-            NSURL *url = [[NSBundle mainBundle] URLForResource:[file stringByDeletingPathExtension] withExtension:[file pathExtension]];
+            NSString *file = [project objectForKey:kProjectLicense];
+            NSURL *url = [[NSBundle mainBundle] URLForResource:[file stringByDeletingPathExtension]
+                                                 withExtension:[file pathExtension]];
             BPLicenseViewController *viewer = [[BPLicenseViewController alloc] init];
             viewer.licenseURL = url;
-            [self.navigationController pushViewController:viewer animated:YES];
+            if (self.navigationController != nil) {
+                [self.navigationController pushViewController:viewer animated:YES];
+            } else {
+                [self presentModalViewController:viewer animated:YES];
+            }
         }   break;
         default:
             break;

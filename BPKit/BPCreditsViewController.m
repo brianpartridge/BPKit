@@ -203,25 +203,6 @@ typedef enum {
     return title;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    CGFloat height = 0;
-    
-    if (self.footerHeight != nil) {
-        height = [super tableView:tableView heightForFooterInSection:section];
-    } else {
-        NSString *footer = [self tableView:tableView titleForFooterInSection:section];
-        if (![NSString bp_isNilOrEmpty:footer]) {
-            UIFont *font = [UIFont systemFontOfSize:[UIFont systemFontSize]];
-            CGSize maxSize = CGSizeMake(tableView.frame.size.width, MAXFLOAT);
-            CGFloat padding = 11;
-            CGSize size = [footer sizeWithFont:font constrainedToSize:maxSize lineBreakMode:UILineBreakModeWordWrap];
-            height = size.height + 2 * padding;
-        }
-    }
-    
-    return height;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     CGFloat height = 44;
     

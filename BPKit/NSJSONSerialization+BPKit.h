@@ -11,6 +11,6 @@
 @interface NSJSONSerialization (BPKit)
 
 + (NSArray *)bp_JSONArrayWithData:(NSData *)data options:(NSJSONReadingOptions)options error:(NSError **)error;
-+ (NSArray *)bp_JSONDictionaryWithData:(NSData *)data options:(NSJSONReadingOptions)options error:(NSError **)error;
++ (NSDictionary *)bp_JSONDictionaryWithData:(NSData *)data options:(NSJSONReadingOptions)options error:(NSError **)error;
 
 @end

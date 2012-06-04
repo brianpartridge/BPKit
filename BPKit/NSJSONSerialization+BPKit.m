@@ -35,7 +35,7 @@
     return [NSJSONSerialization bp_JSONObjectOfClass:[NSArray class] WithData:data options:options error:error];
 }
 
-+ (NSArray *)bp_JSONDictionaryWithData:(NSData *)data options:(NSJSONReadingOptions)options error:(NSError **)error {
++ (NSDictionary *)bp_JSONDictionaryWithData:(NSData *)data options:(NSJSONReadingOptions)options error:(NSError **)error {
     return [NSJSONSerialization bp_JSONObjectOfClass:[NSDictionary class] WithData:data options:options error:error];
 }
 

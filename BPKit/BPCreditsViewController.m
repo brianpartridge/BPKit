@@ -32,6 +32,9 @@ static NSString * const kProjectName = @"Name";
 static NSString * const kProjectLicense = @"License";
 static NSString * const kProjectURL = @"URL";
 
+#define PERSON_IMAGE_SIZE CGSizeMake(24, 24)
+#define APP_IMAGE_SIZE CGSizeMake(57, 57)
+
 typedef enum {
     SectionCreators,
     SectionOtherApps,
@@ -48,7 +51,17 @@ typedef enum {
 @property (nonatomic, strong) NSArray *thanks;
 @property (nonatomic, strong) NSArray *projects;
 
+@property (nonatomic, strong) NSCache *imageCache;
+
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+
+- (void)loadImagesForVisibleRows;
+- (void)loadImageAtURL:(NSURL *)url forIndexPath:(NSIndexPath *)indexPath;
+- (void)didLoadImage:(UIImage *)image forIndexPath:(NSIndexPath *)indexPath;
+
+- (NSString *)iTunesArtworkKeyForCurrentDevice;
+- (NSString *)twitterAvatarSizeForCurrentDevice;
+- (NSURL *)avatarURLForTwitterUser:(NSString *)username withSize:(NSString *)size;
 
 @end
 
@@ -59,9 +72,9 @@ typedef enum {
 @synthesize apps;
 @synthesize thanks;
 @synthesize projects;
+@synthesize imageCache;
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad{
     [super viewDidLoad];
     
     self.title = @"Credits";
@@ -71,8 +84,14 @@ typedef enum {
     self.apps = [self.data objectForKey:kOtherApps];
     self.thanks = [self.data objectForKey:kThanks];
     self.projects = [self.data objectForKey:kOSSProjects];
+
+    self.imageCache = [[NSCache alloc] init];
     
     // TODO: validate required keys
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [self loadImagesForVisibleRows];
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
@@ -81,26 +100,12 @@ typedef enum {
             NSDictionary *creator = [self.creators objectAtIndex:indexPath.row];
             cell.textLabel.text = [creator objectForKey:kPersonName];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            NSString *creatorImageName = [creator objectForKey:@"BPCreatorImage"];
-            // TODO: support loading icon from URL
-            cell.imageView.image = [UIImage imageNamed:creatorImageName];
-            cell.imageView.layer.cornerRadius = 4;
-            cell.imageView.layer.borderWidth = 1;
-            cell.imageView.layer.borderColor = [UIColor colorWithWhite:0.5 alpha:1].CGColor;
         }   break;
         case SectionOtherApps: {
             NSDictionary *app = [self.apps objectAtIndex:indexPath.row];
             cell.textLabel.text = [app objectForKey:kAppName];
             cell.detailTextLabel.text = [app objectForKey:kAppSubtitle];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-            NSString *iconName = [app objectForKey:@"AppIcon"];
-            // TODO: support loading icon from URL
-            UIImage *icon = [UIImage imageNamed:iconName];
-            icon = [UIImage bp_imageWithImage:icon scaledToSize:CGSizeMake(57, 57)];
-            cell.imageView.image = icon;
-            cell.imageView.layer.cornerRadius = 10;
-            cell.imageView.layer.borderWidth = 1;
-            cell.imageView.layer.borderColor = [UIColor colorWithWhite:0.5 alpha:1].CGColor;
         }   break;
         case SectionThanks: {
             NSDictionary *thank = [self.thanks objectAtIndex:indexPath.row];
@@ -117,6 +122,13 @@ typedef enum {
         default:
             break;
     }
+    
+    UIImage *image = [self.imageCache objectForKey:indexPath];
+    cell.imageView.image = image;
+    cell.imageView.layer.cornerRadius = image.size.width * 10.0 / 57.0;
+    cell.imageView.layer.borderWidth = 1;
+    cell.imageView.layer.borderColor = [UIColor colorWithWhite:0.63 alpha:1].CGColor;
+    cell.imageView.clipsToBounds = YES;
 }
 
 #pragma mark - Table view data source
@@ -150,11 +162,7 @@ typedef enum {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *CellIdentifier = [NSString stringWithFormat:@"CellForSection-%d", indexPath.section];
-    
-    UITableViewCellStyle cellStyle = UITableViewCellStyleValue1;
-    if (indexPath.section == SectionOtherApps) {
-        cellStyle = UITableViewCellStyleSubtitle;
-    }
+    UITableViewCellStyle cellStyle = (indexPath.section == SectionOtherApps) ? UITableViewCellStyleSubtitle : UITableViewCellStyleValue1;
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -206,22 +214,13 @@ typedef enum {
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     CGFloat height = 44;
     
-//    switch (indexPath.section) {
-//        case SectionCreator:
-//            switch (indexPath.row) {
-//                case SectionCreatorRowName:
-//                    height = 52;
-//                    break;
-//                default:
-//                    break;
-//            }
-//            break;
-//        case SectionOtherApps:
-//            height = 64;
-//            break;
-//        default:
-//            break;
-//    }
+    switch (indexPath.section) {
+        case SectionOtherApps:
+            height = 64;
+            break;
+        default:
+            break;
+    }
     
     return height;
 }
@@ -275,6 +274,115 @@ typedef enum {
         default:
             break;
     }
+}
+
+#pragma mark - Image Downloading
+
+- (void)loadImagesForVisibleRows {
+    NSArray *visiblePaths = [self.tableView indexPathsForVisibleRows];
+    for (NSIndexPath *indexPath in visiblePaths) {
+        if ([self.imageCache objectForKey:indexPath] != nil) {
+            // Already cached, no need to proceed.
+            continue;
+        }
+
+        switch (indexPath.section) {
+            case SectionCreators: {
+                NSDictionary *creator = [self.creators objectAtIndex:indexPath.row];
+                NSString *twitter = [creator objectForKey:kPersonTwitter];
+                NSURL *url = [self avatarURLForTwitterUser:twitter withSize:[self twitterAvatarSizeForCurrentDevice]];
+                [self loadImageAtURL:url forIndexPath:indexPath];
+            }   break;
+            case SectionOtherApps: {
+                // Lookup the app in the store...
+                NSDictionary *app = [self.apps objectAtIndex:indexPath.row];
+                NSString *storeId = [app objectForKey:kAppStoreId];
+                [BPiTunesStoreClient retrieveDataForAppWithId:storeId
+                                                   completion:^(NSDictionary *iTunesItem) {
+                                                       // ... and determine the right icon to use based on if this is a retina device or not.
+                                                       NSString *urlString = [iTunesItem objectForKey:[self iTunesArtworkKeyForCurrentDevice]];
+                                                       NSURL *url = [NSURL URLWithString:urlString];
+                                                       [self loadImageAtURL:url forIndexPath:indexPath];
+                                                   } error:nil];
+            }   break;
+            case SectionThanks: {
+                NSDictionary *thank = [self.thanks objectAtIndex:indexPath.row];
+                NSString *twitter = [thank objectForKey:kPersonTwitter];
+                NSURL *url = [self avatarURLForTwitterUser:twitter withSize:[self twitterAvatarSizeForCurrentDevice]];
+                [self loadImageAtURL:url forIndexPath:indexPath];
+            }   break;
+            default:
+                break;
+        }
+    }
+}
+
+- (void)loadImageAtURL:(NSURL *)url forIndexPath:(NSIndexPath *)indexPath {
+    [BPImageDownloader imageForURL:url completion:^(UIImage *image) {
+        [self didLoadImage:image forIndexPath:indexPath];
+    } error:nil];
+}
+
+- (void)didLoadImage:(UIImage *)image forIndexPath:(NSIndexPath *)indexPath {
+    if (image == nil) {
+        return;
+    }
+    
+    switch (indexPath.section) {
+        case SectionCreators:
+        case SectionThanks:
+            image = [UIImage bp_imageWithImage:image scaledToSize:PERSON_IMAGE_SIZE];
+            break;
+        case SectionOtherApps:
+            image = [UIImage bp_imageWithImage:image scaledToSize:APP_IMAGE_SIZE];
+            break;
+        default:
+            break;
+    }
+    
+    // Cache the image and reload the cell so it gets applied.
+    [self.imageCache setObject:image forKey:indexPath];
+    [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath]
+                          withRowAnimation:UITableViewRowAnimationNone];
+}
+
+#pragma mark - Utils
+
+- (NSString *)iTunesArtworkKeyForCurrentDevice {
+    return ([UIScreen mainScreen].scale == 2.0) ? @"artworkUrl512" : @"artworkUrl60";
+}
+
+- (NSString *)twitterAvatarSizeForCurrentDevice {
+    return ([UIScreen mainScreen].scale == 2.0) ? @"normal" : @"mini";
+}
+
+/*
+ Returns a URL to a Twitter avatar image.
+ Valid values for size are:
+     bigger - 73px by 73px
+     normal - 48px by 48px
+     mini - 24px by 24px
+     original - undefined
+ */
+- (NSURL *)avatarURLForTwitterUser:(NSString *)username withSize:(NSString *)size {
+    if (size == nil) {
+        size = @"normal";
+    }
+    NSString *urlString = [NSString stringWithFormat:@"https://api.twitter.com/1/users/profile_image?screen_name=%@&size=%@", username, size];
+    NSURL *url = [NSURL URLWithString:urlString];
+    return url;
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (!decelerate) {
+        [self loadImagesForVisibleRows];
+    }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self loadImagesForVisibleRows];
 }
 
 @end

@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		D308834C150097F100659388 /* NSBundle+BPKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D308834A150097F100659388 /* NSBundle+BPKit.h */; };
 		D308834D150097F100659388 /* NSBundle+BPKit.m in Sources */ = {isa = PBXBuildFile; fileRef = D308834B150097F100659388 /* NSBundle+BPKit.m */; };
-		D30883521500995300659388 /* BPPlistAboutViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = D30883501500995300659388 /* BPPlistAboutViewController.h */; };
-		D30883531500995300659388 /* BPPlistAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D30883511500995300659388 /* BPPlistAboutViewController.m */; };
 		D308835515009B5800659388 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D308835415009B5800659388 /* MessageUI.framework */; };
 		D31F113614FF24FD00CC6D29 /* NSSet+BPKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D31F113414FF24FD00CC6D29 /* NSSet+BPKit.h */; };
 		D31F113714FF24FD00CC6D29 /* NSSet+BPKit.m in Sources */ = {isa = PBXBuildFile; fileRef = D31F113514FF24FD00CC6D29 /* NSSet+BPKit.m */; };
@@ -65,8 +63,6 @@
 /* Begin PBXFileReference section */
 		D308834A150097F100659388 /* NSBundle+BPKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+BPKit.h"; sourceTree = "<group>"; };
 		D308834B150097F100659388 /* NSBundle+BPKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+BPKit.m"; sourceTree = "<group>"; };
-		D30883501500995300659388 /* BPPlistAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPPlistAboutViewController.h; sourceTree = "<group>"; };
-		D30883511500995300659388 /* BPPlistAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPPlistAboutViewController.m; sourceTree = "<group>"; };
 		D308835415009B5800659388 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		D31F113414FF24FD00CC6D29 /* NSSet+BPKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSet+BPKit.h"; sourceTree = "<group>"; };
 		D31F113514FF24FD00CC6D29 /* NSSet+BPKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSet+BPKit.m"; sourceTree = "<group>"; };
@@ -138,14 +134,7 @@
 		D308834F1500993800659388 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				D30883501500995300659388 /* BPPlistAboutViewController.h */,
-				D30883511500995300659388 /* BPPlistAboutViewController.m */,
-				D36342FE15157BDC006ACFDF /* BPSupportViewController.h */,
-				D36342FF15157BDC006ACFDF /* BPSupportViewController.m */,
-				D3634302151586F1006ACFDF /* BPCreditsViewController.h */,
-				D3634303151586F1006ACFDF /* BPCreditsViewController.m */,
-				D3E88DDB15159CD900CEC8CD /* BPLicenseViewController.h */,
-				D3E88DDC15159CD900CEC8CD /* BPLicenseViewController.m */,
+				D3FA646F157C306C002905D0 /* Support & Credits */,
 				D394257D1517B7610074AC09 /* BPTableViewController.h */,
 				D394257E1517B7610074AC09 /* BPTableViewController.m */,
 			);
@@ -193,6 +182,19 @@
 				D367054F153D147B00B65142 /* BPIndirectiTunesURLOpener.m */,
 			);
 			name = Utilities;
+			sourceTree = "<group>";
+		};
+		D3FA646F157C306C002905D0 /* Support & Credits */ = {
+			isa = PBXGroup;
+			children = (
+				D36342FE15157BDC006ACFDF /* BPSupportViewController.h */,
+				D36342FF15157BDC006ACFDF /* BPSupportViewController.m */,
+				D3634302151586F1006ACFDF /* BPCreditsViewController.h */,
+				D3634303151586F1006ACFDF /* BPCreditsViewController.m */,
+				D3E88DDB15159CD900CEC8CD /* BPLicenseViewController.h */,
+				D3E88DDC15159CD900CEC8CD /* BPLicenseViewController.m */,
+			);
+			name = "Support & Credits";
 			sourceTree = "<group>";
 		};
 		D3FCFFCD1426BB5A00EECE56 = {
@@ -284,7 +286,6 @@
 				D360481814F9498200965DF6 /* BPAlertView.h in Headers */,
 				D31F113614FF24FD00CC6D29 /* NSSet+BPKit.h in Headers */,
 				D308834C150097F100659388 /* NSBundle+BPKit.h in Headers */,
-				D30883521500995300659388 /* BPPlistAboutViewController.h in Headers */,
 				D363430015157BDC006ACFDF /* BPSupportViewController.h in Headers */,
 				D3634304151586F1006ACFDF /* BPCreditsViewController.h in Headers */,
 				D3E88DDD15159CD900CEC8CD /* BPLicenseViewController.h in Headers */,
@@ -403,7 +404,6 @@
 				D360481914F9498200965DF6 /* BPAlertView.m in Sources */,
 				D31F113714FF24FD00CC6D29 /* NSSet+BPKit.m in Sources */,
 				D308834D150097F100659388 /* NSBundle+BPKit.m in Sources */,
-				D30883531500995300659388 /* BPPlistAboutViewController.m in Sources */,
 				D363430115157BDC006ACFDF /* BPSupportViewController.m in Sources */,
 				D3634305151586F1006ACFDF /* BPCreditsViewController.m in Sources */,
 				D3E88DDE15159CD900CEC8CD /* BPLicenseViewController.m in Sources */,

@@ -38,8 +38,6 @@ typedef enum {
 #import "BPCreditsViewController.h"
 #import "BPLicenseViewController.h"
 
-#import "BPPlistAboutViewController.h"
-
 #pragma mark - Views
 
 #import "BPTransparentToolbar.h"

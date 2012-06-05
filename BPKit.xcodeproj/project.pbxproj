@@ -77,6 +77,12 @@
 		D32AD36F14F9425900B78073 /* NSJSONSerialization+BPKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSJSONSerialization+BPKit.m"; sourceTree = "<group>"; };
 		D32AD37414F9425900B78073 /* UIColor+BPKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+BPKit.h"; sourceTree = "<group>"; };
 		D32AD37514F9425900B78073 /* UIColor+BPKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+BPKit.m"; sourceTree = "<group>"; };
+		D3580796157DB0CF00306609 /* PurchaseConfirmButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PurchaseConfirmButton.png; sourceTree = "<group>"; };
+		D3580797157DB0CF00306609 /* PurchaseConfirmButton@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PurchaseConfirmButton@2x.png"; sourceTree = "<group>"; };
+		D3580798157DB0CF00306609 /* PurchaseConfirmButtonPressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PurchaseConfirmButtonPressed.png; sourceTree = "<group>"; };
+		D3580799157DB0CF00306609 /* PurchaseConfirmButtonPressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PurchaseConfirmButtonPressed@2x.png"; sourceTree = "<group>"; };
+		D358079A157DB0CF00306609 /* PurchasedAlready.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PurchasedAlready.png; sourceTree = "<group>"; };
+		D358079B157DB0CF00306609 /* PurchasedAlready@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PurchasedAlready@2x.png"; sourceTree = "<group>"; };
 		D360481614F9498200965DF6 /* BPAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPAlertView.h; sourceTree = "<group>"; };
 		D360481714F9498200965DF6 /* BPAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPAlertView.m; sourceTree = "<group>"; };
 		D36342FE15157BDC006ACFDF /* BPSupportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPSupportViewController.h; sourceTree = "<group>"; };
@@ -183,6 +189,19 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
+		D3580795157DB0CF00306609 /* BPKitBundleResources */ = {
+			isa = PBXGroup;
+			children = (
+				D3580796157DB0CF00306609 /* PurchaseConfirmButton.png */,
+				D3580797157DB0CF00306609 /* PurchaseConfirmButton@2x.png */,
+				D3580798157DB0CF00306609 /* PurchaseConfirmButtonPressed.png */,
+				D3580799157DB0CF00306609 /* PurchaseConfirmButtonPressed@2x.png */,
+				D358079A157DB0CF00306609 /* PurchasedAlready.png */,
+				D358079B157DB0CF00306609 /* PurchasedAlready@2x.png */,
+			);
+			path = BPKitBundleResources;
+			sourceTree = "<group>";
+		};
 		D367054D153D146D00B65142 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
@@ -213,6 +232,7 @@
 			isa = PBXGroup;
 			children = (
 				D3FCFFDD1426BB5A00EECE56 /* BPKit */,
+				D3580795157DB0CF00306609 /* BPKitBundleResources */,
 				D3FCFFEE1426BB5A00EECE56 /* BPKitTests */,
 				D3FCFFDA1426BB5A00EECE56 /* Frameworks */,
 				D3FCFFD91426BB5A00EECE56 /* Products */,

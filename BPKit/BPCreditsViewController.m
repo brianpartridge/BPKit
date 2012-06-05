@@ -27,6 +27,7 @@ static NSString * const kAppStoreId = @"StoreId";
 static NSString * const kAppName = @"Name";
 static NSString * const kAppSubtitle = @"Subtitle";
 static NSString * const kAppURL = @"URL";
+static NSString * const kAppInstalledURLScheme = @"InstalledURLScheme";
 
 static NSString * const kProjectName = @"Name";
 static NSString * const kProjectLicense = @"License";
@@ -37,7 +38,7 @@ static NSString * const kProjectURL = @"URL";
 
 typedef enum {
     SectionCreators,
-    SectionOtherApps,
+    SectionApps,
     SectionThanks,
     SectionOpenSource,
     SectionCount,
@@ -101,11 +102,12 @@ typedef enum {
             cell.textLabel.text = [creator objectForKey:kPersonName];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }   break;
-        case SectionOtherApps: {
+        case SectionApps: {
             NSDictionary *app = [self.apps objectAtIndex:indexPath.row];
             cell.textLabel.text = [app objectForKey:kAppName];
             cell.detailTextLabel.text = [app objectForKey:kAppSubtitle];
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            cell.accessoryView = [self accessoryViewForApp:app atIndexPath:indexPath];
         }   break;
         case SectionThanks: {
             NSDictionary *thank = [self.thanks objectAtIndex:indexPath.row];
@@ -131,6 +133,46 @@ typedef enum {
     cell.imageView.clipsToBounds = YES;
 }
 
+- (UIButton *)accessoryViewForApp:(NSDictionary *)app atIndexPath:(NSIndexPath *)indexPath {
+    NSString *scheme = [app objectForKey:kAppInstalledURLScheme];
+    NSURL *testURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@:", scheme]];
+    
+    NSString *title = nil;
+    UIColor *titleColor = nil;
+    UIColor *shadowColor = nil;
+    UIImage *image = nil;
+    UIImage *highlightImage = nil;
+    BOOL enabled = YES;
+    if ([[UIApplication sharedApplication] canOpenURL:testURL]) {
+        title = @"INSTALLED";
+        titleColor = [UIColor bp_colorWithHex:@"#737376"];
+        image = [[UIImage imageNamed:@"PurchasedAlready"] stretchableImageWithLeftCapWidth:3 topCapHeight:0];
+        enabled = NO;
+    } else {
+        title = @"APP STORE";
+        titleColor = [UIColor whiteColor];
+        shadowColor = [UIColor colorWithWhite:0.2 alpha:0.8];
+        image = [[UIImage imageNamed:@"PurchaseConfirmButton"] stretchableImageWithLeftCapWidth:7 topCapHeight:0];
+        highlightImage = [[UIImage imageNamed:@"PurchaseConfirmButtonPressed"] stretchableImageWithLeftCapWidth:7 topCapHeight:0];
+        enabled = YES;
+    }
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    [button setBackgroundImage:image forState:UIControlStateNormal];
+    [button setBackgroundImage:highlightImage forState:UIControlStateHighlighted];
+    [button setTitle:title forState:UIControlStateNormal];
+    [button setTitleColor:titleColor forState:UIControlStateNormal];
+    [button setTitleShadowColor:shadowColor forState:UIControlStateNormal];
+    button.titleLabel.shadowOffset = CGSizeMake(0, -1);
+    button.titleLabel.font = [UIFont boldSystemFontOfSize:13];
+    [button setFrame:CGRectMake(0, 0, 86, 25)];
+    button.enabled = enabled;
+    button.tag = indexPath.row;
+    [button addTarget:self action:@selector(appAccessoryButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    
+    return button;
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -144,7 +186,7 @@ typedef enum {
         case SectionCreators:
             count = self.creators.count;
             break;
-        case SectionOtherApps:
+        case SectionApps:
             count = self.apps.count;
             break;
         case SectionThanks:
@@ -162,7 +204,7 @@ typedef enum {
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *CellIdentifier = [NSString stringWithFormat:@"CellForSection-%d", indexPath.section];
-    UITableViewCellStyle cellStyle = (indexPath.section == SectionOtherApps) ? UITableViewCellStyleSubtitle : UITableViewCellStyleValue1;
+    UITableViewCellStyle cellStyle = (indexPath.section == SectionApps) ? UITableViewCellStyleSubtitle : UITableViewCellStyleValue1;
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
@@ -181,7 +223,7 @@ typedef enum {
         case SectionCreators:
             title = (self.creators.count == 1) ? @"Creator" : @"Creators";
             break;
-        case SectionOtherApps:
+        case SectionApps:
             title = (self.creators.count == 1) ? @"My Other Apps" : @"Other Apps";
             break;
         case SectionThanks:
@@ -215,7 +257,7 @@ typedef enum {
     CGFloat height = 44;
     
     switch (indexPath.section) {
-        case SectionOtherApps:
+        case SectionApps:
             height = 64;
             break;
         default:
@@ -234,11 +276,6 @@ typedef enum {
         case SectionCreators: {
             NSDictionary *creator = [self.creators objectAtIndex:indexPath.row];
             NSURL *url = [NSURL URLWithString:[creator objectForKey:kPersonURL]];
-            [[UIApplication sharedApplication] bp_attemptOpenURL:url];
-        }   break;
-        case SectionOtherApps: {
-            NSDictionary *app = [self.apps objectAtIndex:indexPath.row];
-            NSURL *url = [NSURL URLWithString:[app objectForKey:kAppURL]];
             [[UIApplication sharedApplication] bp_attemptOpenURL:url];
         }   break;
         case SectionThanks: {
@@ -276,6 +313,13 @@ typedef enum {
     }
 }
 
+- (void)appAccessoryButtonTapped:(UIButton *)button {
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:button.tag inSection:SectionApps];
+    NSDictionary *app = [self.apps objectAtIndex:indexPath.row];
+    NSURL *url = [NSURL URLWithString:[app objectForKey:kAppURL]];
+    [[UIApplication sharedApplication] bp_attemptOpenURL:url];
+}
+
 #pragma mark - Image Downloading
 
 - (void)loadImagesForVisibleRows {
@@ -293,7 +337,7 @@ typedef enum {
                 NSURL *url = [self avatarURLForTwitterUser:twitter withSize:[self twitterAvatarSizeForCurrentDevice]];
                 [self loadImageAtURL:url forIndexPath:indexPath];
             }   break;
-            case SectionOtherApps: {
+            case SectionApps: {
                 // Lookup the app in the store...
                 NSDictionary *app = [self.apps objectAtIndex:indexPath.row];
                 NSString *storeId = [app objectForKey:kAppStoreId];
@@ -333,7 +377,7 @@ typedef enum {
         case SectionThanks:
             image = [UIImage bp_imageWithImage:image scaledToSize:PERSON_IMAGE_SIZE];
             break;
-        case SectionOtherApps:
+        case SectionApps:
             image = [UIImage bp_imageWithImage:image scaledToSize:APP_IMAGE_SIZE];
             break;
         default:

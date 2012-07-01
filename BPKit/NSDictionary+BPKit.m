@@ -48,12 +48,33 @@
 
 - (NSString *)bp_queryStringForEntries {
     NSMutableArray *components = [NSMutableArray array];
+    NSEnumerator *enumerator = self.keyEnumerator;
     id key;
-    while ((key = [self.keyEnumerator nextObject])) {
+    while ((key = [enumerator nextObject])) {
         id value = [self objectForKey:key];
+        NSString *valueString = nil;
+        if ([value isKindOfClass:[NSString class]]) {
+            valueString = [value bp_urlEncodedString];
+        } else if ([value isKindOfClass:[NSNumber class]]) {
+            valueString = [value stringValue];
+        } else {
+            NSLog(@"Skipping query string value of type: %@", NSStringFromClass([value class]));
+            continue;
+        }
+        
+        NSString *keyString = nil;
+        if ([key isKindOfClass:[NSString class]]) {
+            keyString = [key bp_urlEncodedString];
+        } else if ([key isKindOfClass:[NSNumber class]]) {
+            keyString = [key stringValue];
+        } else {
+            NSLog(@"Skipping query string key of type: %@", NSStringFromClass([key class]));
+            continue;
+        }
+        
         NSString *component = [NSString stringWithFormat: @"%@=%@", 
-                               [key bp_urlEncodedString], 
-                               [value bp_urlEncodedString]];
+                               keyString,
+                               valueString];
         [components addObject:component];
     }
     return [components componentsJoinedByString: @"&"];

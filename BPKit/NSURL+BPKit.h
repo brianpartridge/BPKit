@@ -15,6 +15,8 @@
 
 + (NSURL *)bp_urlWithString:(NSString *)urlString queryComponents:(NSDictionary *)queryComponents;
 
+- (NSString *)bp_urlStringByTrimmingQueryAndFragment;
+
 - (NSDictionary *)bp_queryComponents;
 
 @end

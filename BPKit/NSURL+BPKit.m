@@ -14,6 +14,21 @@
     return [NSURL URLWithString:[urlString stringByAppendingFormat:@"?%@", [queryComponents bp_queryStringForEntries]]];
 }
 
+- (NSString *)bp_urlStringByTrimmingQueryAndFragment {
+    NSString *result = self.absoluteString;
+    
+    // Save everything before the query.
+    NSRange queryRange = [self.absoluteString rangeOfString:self.query];
+    if (queryRange.location != NSNotFound) {
+        result = [result substringToIndex:queryRange.location];
+    }
+    
+    // Remove any trailling ?'s
+    result = [result stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"?"]];
+    
+    return result;
+}
+
 - (NSDictionary *)bp_queryComponents {
     NSMutableDictionary *results = [NSMutableDictionary dictionary];
     

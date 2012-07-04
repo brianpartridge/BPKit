@@ -99,7 +99,7 @@ typedef enum {
         case SectionLike:
             switch (indexPath.row) {
                 case SectionLikeRowRate:
-                    cell.textLabel.text = [NSString stringWithFormat:@"I Love It!", [NSBundle mainBundle].bp_name];
+                    cell.textLabel.text = @"I Love It!";
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     cell.imageView.image = [UIImage imageNamed:[self.data objectForKey:kRateImage]];
                     break;

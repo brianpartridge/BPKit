@@ -11,8 +11,9 @@
 @interface NSBundle (BPKit)
 
 - (NSString *)bp_name;
-- (NSString *)bp_shortVersion;
 - (NSString *)bp_version;
+- (NSString *)bp_build;
+- (NSString *)bp_formattedVersion;
 - (id)bp_infoObjectForKey:(id)key;
 
 @end

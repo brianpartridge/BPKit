@@ -6,6 +6,9 @@
 //  Copyright 2011 Brian Partridge. All rights reserved.
 //
 
+#ifndef BPKIT
+#define BPKIT
+
 #pragma mark - Constants
 
 extern NSString * const BPKitErrorDomain;
@@ -48,3 +51,5 @@ typedef enum {
 #import "BPIndirectiTunesURLOpener.h"
 #import "BPiTunesStoreClient.h"
 #import "BPImageDownloader.h"
+
+#endif

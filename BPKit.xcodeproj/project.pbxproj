@@ -374,7 +374,7 @@
 		D3FCFFCF1426BB5A00EECE56 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Brian Partridge";
 			};
 			buildConfigurationList = D3FCFFD21426BB5A00EECE56 /* Build configuration list for PBXProject "BPKit" */;

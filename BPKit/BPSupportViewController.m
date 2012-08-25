@@ -87,8 +87,7 @@ typedef enum {
                     cell.imageView.image = [UIImage imageNamed:[self.data objectForKey:kSupportEmailImage]];
                     break;
                 case SectionSupportRowTwitter: {
-                    NSString *twitter = [self.data objectForKey:kSupportTwitter];
-                    cell.textLabel.text = [NSString stringWithFormat:@"@%@", twitter];
+                    cell.textLabel.text = [self.data objectForKey:kSupportTwitter];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     cell.imageView.image = [UIImage imageNamed:[self.data objectForKey:kSupportTwitterImage]];
                 }   break;

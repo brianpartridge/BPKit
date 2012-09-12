@@ -16,4 +16,10 @@
     return [mutableSelf copy];
 }
 
++ (NSSet *)bp_intersectionOfSet:(NSSet *)firstSet withSet:(NSSet *)secondSet {
+    NSMutableSet *result = [firstSet mutableCopy];
+    [result intersectSet:secondSet];
+    return [result copy];
+}
+
 @end

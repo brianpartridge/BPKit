@@ -12,4 +12,6 @@
 
 - (NSSet *)bp_objectsNotInSet:(NSSet *)set;
 
++ (NSSet *)bp_intersectionOfSet:(NSSet *)firstSet withSet:(NSSet *)secondSet;
+
 @end

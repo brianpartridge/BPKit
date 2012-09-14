@@ -51,5 +51,6 @@ typedef enum {
 #import "BPIndirectiTunesURLOpener.h"
 #import "BPiTunesStoreClient.h"
 #import "BPImageDownloader.h"
+#import "BPAnimationDelegate.h"
 
 #endif

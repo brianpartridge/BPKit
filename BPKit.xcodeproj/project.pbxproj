@@ -10,6 +10,8 @@
 		D308834C150097F100659388 /* NSBundle+BPKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D308834A150097F100659388 /* NSBundle+BPKit.h */; };
 		D308834D150097F100659388 /* NSBundle+BPKit.m in Sources */ = {isa = PBXBuildFile; fileRef = D308834B150097F100659388 /* NSBundle+BPKit.m */; };
 		D308835515009B5800659388 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D308835415009B5800659388 /* MessageUI.framework */; };
+		D31735041603528A00BD8A38 /* BPAnimationDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = D31735021603528A00BD8A38 /* BPAnimationDelegate.h */; };
+		D31735051603528A00BD8A38 /* BPAnimationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D31735031603528A00BD8A38 /* BPAnimationDelegate.m */; };
 		D31F113614FF24FD00CC6D29 /* NSSet+BPKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D31F113414FF24FD00CC6D29 /* NSSet+BPKit.h */; };
 		D31F113714FF24FD00CC6D29 /* NSSet+BPKit.m in Sources */ = {isa = PBXBuildFile; fileRef = D31F113514FF24FD00CC6D29 /* NSSet+BPKit.m */; };
 		D32AD36A14F940D400B78073 /* BPTransparentToolbar.h in Headers */ = {isa = PBXBuildFile; fileRef = D32AD36814F940D400B78073 /* BPTransparentToolbar.h */; };
@@ -68,6 +70,8 @@
 		D308834A150097F100659388 /* NSBundle+BPKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+BPKit.h"; sourceTree = "<group>"; };
 		D308834B150097F100659388 /* NSBundle+BPKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+BPKit.m"; sourceTree = "<group>"; };
 		D308835415009B5800659388 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		D31735021603528A00BD8A38 /* BPAnimationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPAnimationDelegate.h; sourceTree = "<group>"; };
+		D31735031603528A00BD8A38 /* BPAnimationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPAnimationDelegate.m; sourceTree = "<group>"; };
 		D31F113414FF24FD00CC6D29 /* NSSet+BPKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSSet+BPKit.h"; sourceTree = "<group>"; };
 		D31F113514FF24FD00CC6D29 /* NSSet+BPKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSSet+BPKit.m"; sourceTree = "<group>"; };
 		D32AD36814F940D400B78073 /* BPTransparentToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPTransparentToolbar.h; sourceTree = "<group>"; };
@@ -211,6 +215,8 @@
 				D3FA6472157C458B002905D0 /* BPiTunesStoreClient.m */,
 				D3FA6475157C4670002905D0 /* BPImageDownloader.h */,
 				D3FA6476157C4670002905D0 /* BPImageDownloader.m */,
+				D31735021603528A00BD8A38 /* BPAnimationDelegate.h */,
+				D31735031603528A00BD8A38 /* BPAnimationDelegate.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -326,6 +332,7 @@
 				D3670550153D147B00B65142 /* BPIndirectiTunesURLOpener.h in Headers */,
 				D3FA6473157C458B002905D0 /* BPiTunesStoreClient.h in Headers */,
 				D3FA6477157C4670002905D0 /* BPImageDownloader.h in Headers */,
+				D31735041603528A00BD8A38 /* BPAnimationDelegate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,6 +453,7 @@
 				D3670551153D147B00B65142 /* BPIndirectiTunesURLOpener.m in Sources */,
 				D3FA6474157C458B002905D0 /* BPiTunesStoreClient.m in Sources */,
 				D3FA6478157C4670002905D0 /* BPImageDownloader.m in Sources */,
+				D31735051603528A00BD8A38 /* BPAnimationDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

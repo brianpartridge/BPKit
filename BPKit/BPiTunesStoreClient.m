@@ -13,7 +13,7 @@
 + (void)retrieveDataForAppWithId:(NSString *)appStoreId
                       completion:(void(^)(NSDictionary *iTunesJSON))completionBlock
                            error:(void(^)(NSError *))errorBlock {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://itunes.apple.com/lookup?id=%@", appStoreId]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://itunes.apple.com/lookup?id=%@", appStoreId]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]

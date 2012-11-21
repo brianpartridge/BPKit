@@ -10,7 +10,10 @@
 #import "BPLicenseViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "UIImage+BPKit.h"
+#import "UIColor+BPKit.h"
 #import "BPIndirectItunesURLOpener.h"
+#import "BPiTunesStoreClient.h"
+#import "BPImageDownloader.h"
 
 static NSString * const kBPCreditsViewControllerContent = @"BPCreditsViewControllerContent";
 

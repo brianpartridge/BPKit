@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
+#import "BPTableViewController.h"
 
 /*
  Provides a simple reusable BPTableViewController to layout support information.

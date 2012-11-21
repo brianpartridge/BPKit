@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 Brian Partridge. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
+
 @interface BPImageDownloader : NSObject
 
 + (void)imageForURL:(NSURL *)url

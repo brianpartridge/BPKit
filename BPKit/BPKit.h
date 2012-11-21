@@ -9,28 +9,8 @@
 #ifndef BPKIT
 #define BPKIT
 
-#pragma mark - Constants
-
-extern NSString * const BPKitErrorDomain;
-
-typedef enum {
-    BPKitErrorUnexpectedReturnType,
-    BPKitErrorUnknown,
-} BPKitError;
-
-#pragma mark - Helpers
-
-#define DegreesToRadians(degrees) (degrees * M_PI / 180.0)
-#define RadiansToDegrees(radians) (radians * 180.0 / M_PI)
-
 #pragma mark - Categories
 
-#import "NSBundle+BPKit.h"
-#import "NSDictionary+BPKit.h"
-#import "NSJSONSerialization+BPKit.h"
-#import "NSSet+BPKit.h"
-#import "NSString+BPKit.h"
-#import "NSURL+BPKit.h"
 #import "UIColor+BPKit.h"
 #import "UIImage+BPKit.h"
 
@@ -53,4 +33,4 @@ typedef enum {
 #import "BPImageDownloader.h"
 #import "BPAnimationDelegate.h"
 
-#endif
+#endif // BPKIT

@@ -8,6 +8,7 @@
 
 #import "BPSupportViewController.h"
 #import "BPCreditsViewController.h"
+#import "BPIndirectiTunesURLOpener.h"
 
 #pragma mark - Plist Keys
 static NSString * const kBPSupportViewControllerContent = @"BPSupportViewControllerContent";

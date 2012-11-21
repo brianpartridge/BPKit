@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BPTableViewController.h"
 
 /*
  Provides a simple reusable BPTableViewController to layout credits for an app.

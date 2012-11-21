@@ -1,0 +1,3 @@
+[submodule "3rdParty/BPFoundation"]
+	path = 3rdParty/BPFoundation
+	url = git@github.com:brianpartridge/BPFoundation.git
